@@ -15,15 +15,12 @@
     "boot_command": [
       "root<enter><wait>",
       "nc -lp 22&<enter>",
-      "ifconfig eth0 up && udhcpc eth0<enter><wait5>",
-      "apk add sudo wget<enter><wait5>",
+      "ifconfig eth1 up && udhcpc -i eth1<enter><wait5>",
       "setup-alpine<enter><wait>",
       "us<enter>",
       "us<enter>",
       "alpine<enter>",
-      "eth0<enter>",
-      "dhcp<enter>",
-      "no<enter>",
+      "done<enter>no<enter><enter><enter>",
       "vagrant<enter>",
       "vagrant<enter>",
       "UTC<enter><wait5><enter>",
@@ -54,8 +51,16 @@
       "ln -sf /bin/ash /bin/bash<enter>",
       "mount -t proc none /proc<enter>",
       "mount -t devpts devpts /dev/pts<enter>",
+      "apk add sudo wget bash<enter><wait10><wait10>",
+      "killall -9 udhcpc<enter>",
+      "ifconfig eth1 down<enter>",
+      "setup-interfaces<enter>",
+      "eth0<enter>",
+      "dhcp<enter>",
+      "done<enter>no<enter>",
       "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers<enter>",
-      "/usr/sbin/sshd<enter><wait10>"
+      "/usr/sbin/sshd<enter>",
+      "ifup eth0"
     ],
 
     "http_directory": "http",
@@ -68,10 +73,11 @@
 
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--memory", "512"],
-      ["modifyvm", "{{.Name}}", "--cpus", "1"]
+      ["modifyvm", "{{.Name}}", "--cpus", "1"],
+      ["modifyvm", "{{.Name}}", "--nic2", "bridged", "--cableconnected2", "on", "--bridgeadapter2", "en0"]
     ],
 
-    "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
+    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -hP"
   }],
   "post-processors": [{
     "output": "build/alpine-3.0.6-amd64.box",
