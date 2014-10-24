@@ -77,7 +77,7 @@
       ["modifyvm", "{{.Name}}", "--nic2", "bridged", "--cableconnected2", "on", "--bridgeadapter2", "en0"]
     ],
 
-    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -hP"
+    "shutdown_command": "echo 'vagrant'|sudo -S poweroff"
   }],
   "post-processors": [{
     "output": "build/alpine-3.0.6-amd64.box",
