@@ -51,7 +51,7 @@
       "ln -sf /bin/ash /bin/bash<enter>",
       "mount -t proc none /proc<enter>",
       "mount -t devpts devpts /dev/pts<enter>",
-      "apk add sudo wget bash<enter><wait10><wait10>",
+      "apk add sudo wget bash virtualbox-additions-grsec<enter><wait10><wait10>",
       "adduser vagrant<enter>vagrant<enter>vagrant<enter>",
       "killall -9 udhcpc<enter>",
       "ifconfig eth1 down<enter>",
@@ -88,8 +88,7 @@
     "type": "shell",
     "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
     "scripts": [
-      "scripts/vagrant.sh",
-      "scripts/vboxguest.sh"
+      "scripts/vagrant.sh"
     ]
   }]
 }
