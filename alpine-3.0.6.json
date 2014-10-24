@@ -60,7 +60,7 @@
       "done<enter>no<enter>",
       "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers<enter>",
       "/usr/sbin/sshd<enter>",
-      "ifup eth0"
+      "ifup eth0<enter>"
     ],
 
     "http_directory": "http",
