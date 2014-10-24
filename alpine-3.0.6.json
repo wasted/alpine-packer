@@ -1,0 +1,88 @@
+{
+  "builders": [{
+    "type": "virtualbox-iso",
+    "virtualbox_version_file": ".vbox_version",
+    "headless": false,
+
+    "guest_os_type": "Ubuntu_64",
+    "disk_size": 10240,
+
+    "iso_url": "http://wiki.alpinelinux.org/cgi-bin/dl.cgi/v3.0/releases/x86_64/alpine-3.0.6-x86_64.iso",
+    "iso_checksum": "2b326b33a0c130b9bef8c871805cd1ed258838b1",
+    "iso_checksum_type": "sha1",
+
+    "boot_wait": "30s",
+    "boot_command": [
+      "root<enter><wait>",
+      "nc -lp 22&<enter>",
+      "ifconfig eth0 up && udhcpc eth0<enter><wait5>",
+      "apk add sudo wget<enter><wait5>",
+      "setup-alpine<enter><wait>",
+      "us<enter>",
+      "us<enter>",
+      "alpine<enter>",
+      "eth0<enter>",
+      "dhcp<enter>",
+      "no<enter>",
+      "vagrant<enter>",
+      "vagrant<enter>",
+      "UTC<enter><wait5><enter>",
+      "1<enter>",
+      "openssh<enter><wait5>",
+      "openntpd<enter><wait>",
+      "sda<enter>",
+      "sys<enter>",
+      "y<enter><wait10><wait10>",
+      "killall -9 nc<enter>",
+      "service sshd stop<enter>",
+      "sysctl -w kernel.grsecurity.chroot_caps=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_deny_chmod=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_deny_chroot=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_deny_fchdir=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_deny_mknod=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_deny_mount=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_deny_pivot=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_deny_shmat=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_deny_sysctl=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_deny_unix=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_enforce_chdir=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_findtask=0<enter>",
+      "sysctl -w kernel.grsecurity.chroot_restrict_nice=0<enter>",
+      "mount /dev/sda3 /mnt<enter><wait>",
+      "mount -o bind /dev /mnt/dev<enter>",
+      "chroot /mnt<enter>",
+      "ln -sf /bin/ash /bin/bash<enter>",
+      "mount -t proc none /proc<enter>",
+      "mount -t devpts devpts /dev/pts<enter>",
+      "echo 'vagrant ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers<enter>",
+      "/usr/sbin/sshd<enter><wait10>"
+    ],
+
+    "http_directory": "http",
+    "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+
+    "ssh_username": "root",
+    "ssh_password": "vagrant",
+    "ssh_port": 22,
+    "ssh_wait_timeout": "60m",
+
+    "vboxmanage": [
+      ["modifyvm", "{{.Name}}", "--memory", "512"],
+      ["modifyvm", "{{.Name}}", "--cpus", "1"]
+    ],
+
+    "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
+  }],
+  "post-processors": [{
+    "output": "build/alpine-3.0.6-amd64.box",
+    "type": "vagrant"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+    "scripts": [
+      "scripts/vagrant.sh",
+      "scripts/vboxguest.sh"
+    ]
+  }]
+}
